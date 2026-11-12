@@ -39,10 +39,11 @@ export interface IKitValibotTransformerOptions {
  * }
  * ```
  */
-export function fromValiError(
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+export const fromValiError = (
   error: unknown,
-  options?: IKitValibotTransformerOptions
-) {
+  options?: IKitValibotTransformerOptions,
+): KitHttpError | null => {
   if (isValiError(error)) {
     const {
       message = "Valibot Validation Failed",
@@ -53,7 +54,7 @@ export function fromValiError(
     });
   }
   return null;
-}
+};
 
 /**
  * Transforms a ValiError into a structured KitHttpError with a BadRequest status
@@ -76,14 +77,13 @@ export function fromValiError(
  * }
  * ```
  */
-export function KitValibotTransformer(
+export const KitValibotTransformer = (
   error: unknown,
-  options?: IKitValibotTransformerOptions
-): never {
+  options?: IKitValibotTransformerOptions,
+): never => {
   const kitError = fromValiError(error, options);
   if (kitError) {
     throw kitError;
   }
   throw error;
-}
-
+};
