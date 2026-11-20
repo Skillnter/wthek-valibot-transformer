@@ -4,6 +4,14 @@ import { BAD_REQUEST } from "http-response-status-code";
 
 /**
  * Configuration options for KitValibotTransformer and fromValiError.
+ *
+ * @example
+ * ```typescript
+ * const options: IKitValibotTransformerOptions = {
+ *   message: "Schema validation failed",
+ *   statusCode: 422,
+ * };
+ * ```
  */
 export interface IKitValibotTransformerOptions {
   /**
