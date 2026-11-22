@@ -9,12 +9,13 @@ _Built for projects using [`http-error-kit`][http-error-kit], this utility trans
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/skillnter/wthek-valibot-transformer/main.yml)
 [![npm version](https://img.shields.io/npm/v/%40wthek%2Fvalibot-transformer?color=brightgreen)](https://www.npmjs.com/package/@wthek/valibot-transformer)
 [![GitHub license](https://img.shields.io/github/license/skillnter/wthek-valibot-transformer?color=brightgreen)](LICENSE)
+![NPM Type Definitions](https://img.shields.io/npm/types/%40wthek%2Fvalibot-transformer)
 [![GitHub Issues](https://img.shields.io/github/issues/Skillnter/wthek-valibot-transformer)](https://github.com/Skillnter/wthek-valibot-transformer/issues)
 ![npm](https://img.shields.io/npm/dy/%40wthek%2Fvalibot-transformer)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/%40wthek%2Fvalibot-transformer)](https://bundlephobia.com/package/%40wthek%2Fvalibot-transformer)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/f0cff2dcf747487f839e41587fba3dfe)](https://app.codacy.com/gh/Skillnter/wthek-valibot-transformer/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/f0cff2dcf747487f839e41587fba3dfe)](https://app.codacy.com/gh/Skillnter/wthek-valibot-transformer/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
-[![Socket Badge](https://socket.dev/api/badge/npm/package/@wthek/valibot-transformer/1.0.0)](https://socket.dev/npm/package/@wthek/valibot-transformer/overview/1.0.0)
+[![Socket Badge](https://socket.dev/api/badge/npm/package/@wthek/valibot-transformer/)](https://socket.dev/npm/package/@wthek/valibot-transformer/overview/)
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-121013?logo=github&logoColor=white)](https://skillnter.github.io/wthek-valibot-transformer/)
 [![Github Sponsors](https://img.shields.io/badge/GitHub%20Sponsors-30363D?&logo=GitHub-Sponsors&logoColor=EA4AAA)](https://github.com/sponsors/Skillnter)
 [![Open Collective](https://img.shields.io/badge/Open%20Collective-3385FF?logo=open-collective&logoColor=white)](https://opencollective.com/skillnter)
@@ -36,6 +37,7 @@ _Built for projects using [`http-error-kit`][http-error-kit], this utility trans
 -   [Installation](#installation)
 -   [Usage](#usage)
 -   [Options](#options)
+-   [AI Agent Integration](#ai-agent-integration)
 -   [Explore More WTHek Extensions](#explore-more-wthek-extensions)
 -   [People](#people)
 -   [Donations](#donations)
@@ -129,6 +131,18 @@ KitHttpErrorConfig.configureFormatter(
         traceId: args[0] || "0fcb44cb-4f09-4900-8c4f-73ddd37ffe0a",
     })
 );
+```
+
+## AI Agent Integration
+
+When building with AI coding assistants (Claude Code, Cursor, GitHub Copilot, Antigravity, Devin), add the following directive to your project's `.cursorrules`, `.github/copilot-instructions.md`, or system prompt:
+
+```markdown
+### Valibot Validation Error Rule
+- When validating input with Valibot, transform validation failures into `http-error-kit` errors using `@wthek/valibot-transformer`.
+- For synchronous schema parsing: wrap in `try ... catch (err)` and invoke `KitValibotTransformer(err)`.
+- For `v.safeParse()` flows: if `!result.success`, convert directly with `fromValiError(result.error)`.
+- Pair with `@wthek/*-middleware` to automatically serialize validation issues into structured HTTP responses.
 ```
 
 ## Explore More WTHek Extensions

@@ -1,0 +1,64 @@
+# @wthek/valibot-transformer
+
+> Framework-agnostic Valibot error transformer for `http-error-kit`.
+
+## Overview
+`@wthek/valibot-transformer` transforms Valibot `ValiError` instances into structured `KitHttpError` objects (defaulting to 400 Bad Request) with complete issue details attached under `issues`. Works seamlessly across Express, Fastify, Hono, Koa, NestJS, and Next.js applications.
+
+## Installation
+```bash
+npm install @wthek/valibot-transformer valibot http-error-kit http-response-status-code
+```
+
+## Quick Start
+
+### Throwing Transformed Errors (`KitValibotTransformer`)
+```typescript
+import * as v from "valibot";
+import { KitValibotTransformer } from "@wthek/valibot-transformer";
+
+const UserSchema = v.object({
+  email: v.pipe(v.string(), v.email()),
+  age: v.pipe(v.number(), v.minValue(18)),
+});
+
+try {
+  v.parse(UserSchema, { email: "invalid-email", age: 16 });
+} catch (error) {
+  // Throws KitHttpError with status 400 and validation issues attached
+  KitValibotTransformer(error);
+}
+```
+
+### Safe Conversion Without Throwing (`fromValiError`)
+```typescript
+import * as v from "valibot";
+import { fromValiError } from "@wthek/valibot-transformer";
+
+const result = v.safeParse(UserSchema, data);
+if (!result.success) {
+  const kitError = fromValiError(result.error, {
+    message: "Validation Failed",
+    statusCode: 422,
+  });
+  // kitError is a KitHttpError instance containing { issues: result.error.issues }
+}
+```
+
+## API Reference
+
+### `fromValiError(error: unknown, options?: IKitValibotTransformerOptions): KitHttpError | null`
+Converts a `ValiError` into a `KitHttpError` without throwing. Returns `null` if the provided value is not a `ValiError`.
+
+### `KitValibotTransformer(error: unknown, options?: IKitValibotTransformerOptions): never`
+Transforms a `ValiError` into a `KitHttpError` and throws it. If the value is not a `ValiError`, throws it unchanged.
+
+#### Options (`IKitValibotTransformerOptions`)
+- `message` (`string`, default: `"Valibot Validation Failed"`): Custom error message.
+- `statusCode` (`number`, default: `400`): Custom HTTP status code.
+
+## Safety Rules for AI Agents
+1. Wrap `v.parse()` calls in `try ... catch` and pass caught errors to `KitValibotTransformer(err)`.
+2. When using `v.safeParse()`, check `!result.success` and convert with `fromValiError(result.error)`.
+3. Non-Valibot errors passed to `KitValibotTransformer(err)` are rethrown unchanged, preventing swallowed runtime errors.
+
